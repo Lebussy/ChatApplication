@@ -7,9 +7,9 @@ import bycrypt from 'bcryptjs'
 userRouter.post('/', async (req, res) => {
   // destructures the required details from the request body
   const { name, username, password } = req.body
-
   // Ensures that the request contains the required information
   if (!name || !username || !password){
+
     return res.status(400).json({
       error: 'All fields required'
     })
