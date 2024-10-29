@@ -1,4 +1,5 @@
 import logger from './logger.js'
+import { passwordStrength } from 'check-password-strength'
 
 const errorHandler = (err, req, res, next) => {
   // Loggs the error name and message for debugging
@@ -30,6 +31,12 @@ const unknownEndpoint = (req, res) => {
   return res.status(404).json({
     error: `We couldnt find that!`
   })
+}
+
+const passwordStrongEnough = password => {
+  const strengthResult = passwordStrength(password)
+  console.log('############Stength result#####################')
+  console.log(strengthResult)
 }
 
 export default {errorHandler, unknownEndpoint}

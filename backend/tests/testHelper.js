@@ -28,7 +28,6 @@ const initialiseUsers = async () => {
   try {
     // Clears existing users from the db
     await User.deleteMany({})
-    logger.info('users cleared from db')
     // Synchronously adds each of the initial users
     for (const user of initialUsers){
       // Creates the passwordHash from the initial users password
@@ -40,10 +39,9 @@ const initialiseUsers = async () => {
       })
       await newUser.save()
     }
-    logger.info('users initialised')
   } catch (error) {
-    logger.info('Failed to initialise users')
-    logger.error(error.name)
+    console.log('Failed to initialise users')
+    console.error(error.name)
   }
 }
 
@@ -53,8 +51,8 @@ const usersInDb = async () => {
     const users = await User.find({})
     return users
   } catch (error) {
-    logger.error(error)
-    logger.info('Error fetching users from db')
+    console.error(error)
+    console.log('Error fetching users from db')
   }
 }
 

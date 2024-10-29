@@ -2,11 +2,20 @@
 - initialise the app on port in index DONE
 - add route not found router to middlewear DONE
 - add request logger middlewear
+- add login route
+- read the chatgtp rec for next action
 
 USER ROUTE:
 - test that a new user can be added postman DONE
 - write error handlers for new user route DONE
-- write tests for user router
+- implement password strength checker
+
+USER TESTS:
+- write tests for user router 
+  - write test for valid data DONE
+  - write test for dup username DONE
+  - write test for missing credentials DONE
+  - write test for weak password DONE (fails)
 
 LATER: 
 - expand user details to include DOB and fullname

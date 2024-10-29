@@ -2,6 +2,7 @@ import express from 'express'
 const userRouter = express.Router()
 import User from '../models/user.js'
 import bycrypt from 'bcryptjs'
+import testHelper from '../tests/testHelper.js'
 
 // Route for posting new user to the database
 userRouter.post('/', async (req, res) => {
@@ -14,6 +15,9 @@ userRouter.post('/', async (req, res) => {
       error: 'All fields required'
     })
   }
+
+  // Ensures the password is strong enough
+  if (!)
 
   // Creates the new user
   const passwordHash = await bycrypt.hash(password, 10)
