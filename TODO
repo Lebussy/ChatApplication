@@ -1,0 +1,14 @@
+- in index connect express application to the mongoose database DONE
+- initialise the app on port in index DONE
+- add route not found router to middlewear DONE
+- add request logger middlewear
+
+USER ROUTE:
+- test that a new user can be added postman DONE
+- write error handlers for new user route DONE
+- write tests for user router
+
+LATER: 
+- expand user details to include DOB and fullname
+- integrate hatespeach api
+- add dynamic username validation checker
