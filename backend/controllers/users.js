@@ -1,8 +1,8 @@
 import express from 'express'
 const userRouter = express.Router()
 import User from '../models/user.js'
-import bycrypt from 'bcryptjs'
-import testHelper from '../tests/testHelper.js'
+import bcrypt from 'bcryptjs'
+import { passwordStrength } from 'check-password-strength'
 
 // Route for posting new user to the database
 userRouter.post('/', async (req, res) => {
@@ -15,12 +15,16 @@ userRouter.post('/', async (req, res) => {
       error: 'All fields required'
     })
   }
-
-  // Ensures the password is strong enough
-  if (!)
+  
+  // Ensures password strong enough
+  // MVP - not best practice!!
+  const strengthResult = passwordStrength(password)
+  if (strengthResult.id < 2){
+    return res.status(400).json({error: 'password too weak'})
+  }
 
   // Creates the new user
-  const passwordHash = await bycrypt.hash(password, 10)
+  const passwordHash = await bcrypt.hash(password, 10)
   const newUser = new User({
     name,
     username,

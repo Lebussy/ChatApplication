@@ -54,7 +54,7 @@ describe('When there are two users in the database...', () => {
       const response = await api.post('/api/users').send({
         username: existingUsername,
         name: 'validname',
-        password: 'SuperStrong!'
+        password: 'SuperStrong1!'
       })
       .expect(400)
       .expect('Content-Type', /application\/json/)
@@ -67,6 +67,8 @@ describe('When there are two users in the database...', () => {
     })
 
     test('with a weak password fails', async () => {
+      const usersAtStart = await helper.usersInDb()
+
       // Attempts to post a new user with a weak password
       const weakPassword = 'weak'
       const weakPasswordUser = {...helper.validNewUserData, password: weakPassword}

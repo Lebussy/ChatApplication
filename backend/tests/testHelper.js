@@ -7,12 +7,12 @@ const initialUsers = [
   {
     username: 'firstUser',
     name: 'sponge',
-    password: 'SuperStrong!'
+    password: 'SuperStrong1!'
   },
   {
     username: 'secondUser',
     name: 'starfish',
-    password: 'SuperStrong!'
+    password: 'SuperStrong1!'
   }
 ]
 
@@ -20,7 +20,7 @@ const initialUsers = [
 const validNewUserData = {
   username: 'validNewUser',
   name: 'squid',
-  password: 'SuperStrong!'
+  password: 'SuperStrong1!'
 }
 
 // For initialising the users to the database
