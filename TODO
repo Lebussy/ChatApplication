@@ -6,7 +6,12 @@
 - add login route tests DONE
 - read the chatgtp rec for next action
 - complete the socket.io tutorial DONE
-- create mvp frontend to connect server socket with single chatroom
+- create mvp frontend to connect server socket with single chatroom DONE
+- Create a box for the chat room frontend 
+- Add frontend functionality to join rooms
+- Add backend functionality to join rooms
+- save messages to mongo to persist history
+- require users to sign-in and include user details with chat message
 
 USER ROUTE:
 - test that a new user can be added postman DONE
