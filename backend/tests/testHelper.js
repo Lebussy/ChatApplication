@@ -42,6 +42,7 @@ const initialiseUsers = async () => {
   } catch (error) {
     console.log('Failed to initialise users')
     console.error(error.name)
+    console.error(error.message)
   }
 }
 

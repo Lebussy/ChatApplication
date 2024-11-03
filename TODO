@@ -5,6 +5,8 @@
 - add login route DONE
 - add login route tests DONE
 - read the chatgtp rec for next action
+- complete the socket.io tutorial DONE
+- create mvp frontend to connect server socket to
 
 USER ROUTE:
 - test that a new user can be added postman DONE
@@ -23,3 +25,7 @@ LATER:
 - add user restrictions based on age?
 - integrate hatespeach api
 - add dynamic username validation checker for registration
+- integrate a chat gtp analysis of the chat, with different perception predispositions eg. 'interperet as hostile, interperet as loving'
+  - could be an art-piece about how our predispositions affects our interpretation of events
+  - eg 'interperet this as if ive been brought up by emotionally volatile parents' 
+- a game where a certain number of people enter a chat, alongside a chat gtp bot. People are against the bot and have to vote on who the bot is

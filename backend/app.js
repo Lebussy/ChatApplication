@@ -8,8 +8,6 @@ import mongoose from 'mongoose'
 import logger from './utils/logger.js'
 import config from './utils/config.js'
 
-
-
 // The express application
 const app = express()
 
