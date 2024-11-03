@@ -6,7 +6,7 @@
 - add login route tests DONE
 - read the chatgtp rec for next action
 - complete the socket.io tutorial DONE
-- create mvp frontend to connect server socket to
+- create mvp frontend to connect server socket with single chatroom
 
 USER ROUTE:
 - test that a new user can be added postman DONE
