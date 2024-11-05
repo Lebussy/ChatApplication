@@ -1,10 +1,16 @@
 import ChatRoom from './components/Chatroom.jsx'
 import {socket} from './socket.js'
 import { useEffect, useState } from 'react'
+import './styles.css'
 
 const App = () => {
   // State for storing messages
   const [messages, setMessages] = useState([])
+  // Temp user state
+  const [user, setUser] = useState({
+    username: `aSickUser${Math.floor(Math.random() * 2000)}`,
+    name: 'bartSimpson'
+  })
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -21,14 +27,16 @@ const App = () => {
     })
 
     socket.on('chat message', (message) => {
+      console.log('#################################')
+      console.log()
+      console.log(message)
       setMessages(previous => previous.concat(message))
     })
   }, [])
 
   return (
     <>
-      <h1>Chat app!</h1>
-      <ChatRoom messages={messages}></ChatRoom>
+      <ChatRoom messages={messages} user={user}></ChatRoom>
     </>
   )
 }

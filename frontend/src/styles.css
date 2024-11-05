@@ -1,0 +1,80 @@
+*{
+  box-sizing: border-box;
+}
+
+.chatroom{
+  background-color: rgb(91, 125, 85);
+  min-height: 400px;
+  width: auto;
+  max-width: 400px;
+  margin: auto;
+  border: 2px solid rgb(168, 144, 144);
+  position: relative;
+}
+
+.messageform{
+  display: flex;
+  align-items: flex-end; /* Align items to the bottom */
+  width: 100%;
+  background-color: rgb(80, 80, 102);
+  position: absolute;
+  bottom: 0;
+  padding: 5px; /* Add padding for better spacing */
+  box-sizing: border-box; /* Ensure padding is included in the width */
+  max-height: 50%; /* Limit the height to 50% of the containing div */
+  overflow: hidden; /* Hide overflow to ensure the textarea scrolls */
+}
+
+.messageform form {
+  display: flex;
+  width: 100%;
+}
+
+.messageform textarea {
+  flex-grow: 1;
+  width: calc(100% - 60px); /* Adjust width to leave space for the button */
+  overflow-y: auto; /* Make the textarea scrollable */
+  resize: none;
+  max-height: 100%; /* Limit the height to the height of the .messageform div */
+  border-radius: 10px;
+}
+
+.messageform button {
+  height: 60px;
+  width: 80px; /* Fixed width for the button */
+  align-self: flex-end; /* Align the button to the bottom */
+  margin: 2px;
+  border-radius: 20px;
+}
+
+#chatHistoryBox {
+  padding: 10px;
+  max-height: 250px;
+  overflow-y: auto;
+  background-color: white;
+  border-bottom: 2px solid rgb(168, 144, 144);
+}
+
+#chatHistoryBox ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#chatHistoryBox li {
+  padding: 5px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: rgb(230, 230, 230);
+  word-wrap: break-word;
+}
+
+#chatHistoryBox li .user {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+#chatHistoryBox li .message-text {
+  color: rgb(50, 50, 50);
+}
+

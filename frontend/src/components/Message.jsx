@@ -1,6 +1,9 @@
 const Message = ({message}) => {
   return (
-    <li>{message.text}</li>
+    <li>
+      <span className="user">{message.user}:</span>
+      <span className="message-text">{message.text}</span>
+    </li>
   )
 }
 
