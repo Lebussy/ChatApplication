@@ -4,12 +4,14 @@
 
 .chatroom{
   background-color: rgb(91, 125, 85);
-  min-height: 400px;
+  min-height: 300px; /* Adjust the minimum height */
+  max-height: 500px; /* Set a maximum height */
   width: auto;
   max-width: 400px;
   margin: auto;
   border: 2px solid rgb(168, 144, 144);
-  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .messageform{
@@ -17,12 +19,9 @@
   align-items: flex-end; /* Align items to the bottom */
   width: 100%;
   background-color: rgb(80, 80, 102);
-  position: absolute;
-  bottom: 0;
   padding: 5px; /* Add padding for better spacing */
   box-sizing: border-box; /* Ensure padding is included in the width */
-  max-height: 50%; /* Limit the height to 50% of the containing div */
-  overflow: hidden; /* Hide overflow to ensure the textarea scrolls */
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 .messageform form {
@@ -49,7 +48,7 @@
 
 #chatHistoryBox {
   padding: 10px;
-  max-height: 250px;
+  flex-grow: 1;
   overflow-y: auto;
   background-color: white;
   border-bottom: 2px solid rgb(168, 144, 144);
@@ -76,5 +75,49 @@
 
 #chatHistoryBox li .message-text {
   color: rgb(50, 50, 50);
+}
+
+#chatHistoryBox li .message-time {
+  display: block;
+  font-size: 0.8em;
+  color: gray;
+  margin-top: 5px;
+}
+
+.loginDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgb(91, 125, 85);
+}
+
+.loginDiv form {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.loginDiv input {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid rgb(168, 144, 144);
+  border-radius: 5px;
+}
+
+.loginDiv button {
+  padding: 10px;
+  background-color: rgb(80, 80, 102);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.loginDiv button:hover {
+  background-color: rgb(60, 60, 82);
 }
 

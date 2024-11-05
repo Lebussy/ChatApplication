@@ -7,11 +7,25 @@
 - read the chatgtp rec for next action
 - complete the socket.io tutorial DONE
 - create mvp frontend to connect server socket with single chatroom DONE
-- Create a box for the chat room frontend 
-- Add frontend functionality to join rooms
+- Create a box for the chat room frontend DONE
+
+- save messages to mongo to persist history DONE
+- create message route to retrieve all messages at start DONE
+- update message json structure to use 'content' across application DONE
+- set up frontend to retrieve messages on first render DONE
+- display date and time of the message DONE
+- require users to sign-in and include user details with chat message 
+  - authorisation message to be sent by client after login
+  - add a client-side middlewear to ensure valid authorisation token valid with username on client-events
+  - change the message initialisation to use an event instead
+  - require a user object to be present to display the chatroom, if not show login
+  - save user to the local-storage to ensure messages persist on refresh
+  - add logout functionality
+  - 
+
+
+- Add frontend functionality to join rooms 
 - Add backend functionality to join rooms
-- save messages to mongo to persist history
-- require users to sign-in and include user details with chat message
 
 USER ROUTE:
 - test that a new user can be added postman DONE

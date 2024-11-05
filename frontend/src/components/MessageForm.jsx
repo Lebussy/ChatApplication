@@ -7,9 +7,9 @@ const MessageForm = ({user}) => {
 
   const sendMessage = event => {
     event.preventDefault();
-    const message = event.target.message.value;
+    const content = event.target.message.value;
     socket.emit('chat message', {
-      text: message, 
+      content, 
       user: user.username
     });
     event.target.message.value = ""; 
