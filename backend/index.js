@@ -40,14 +40,12 @@ io.on('connect', async socket => {
   // Authorisation object from the client
   const auth = socket.handshake.auth
 
-  // For notifying the other users that a user has connected
-  socket.broadcast.emit('user connected', auth.username)
+  // For notifying all connected clients that a user has connected
+  io.emit('user connected', auth.username)
 
   // For sending the chat history of the current room
   const chatHistory = await socketHelper.getMessageHistory()
   socket.emit('room history', chatHistory)
-  
-  logger.info(`${auth.username} connected`)
 
   socket.on('disconnect', () => {
     logger.info(`${auth.username} disconnected`)

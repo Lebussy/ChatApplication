@@ -29,7 +29,7 @@ loginRouter.post('/', async (req, res) => {
   }
 
   // Returns a valid token that expires in 4h
-  const token = jwt.sign(payload, process.env.SECRET, {expiresIn: 1})
+  const token = jwt.sign(payload, process.env.SECRET, {expiresIn: 60*60*4})
   return res.status(200).json({
     username: user.username,
     name: user.name,

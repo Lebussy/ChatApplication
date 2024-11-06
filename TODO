@@ -21,13 +21,15 @@
 - add a notification box for the frontend DONE
 - change the message initialisation to use an event instead DONE
 
-- add a user registration page
-- notify the user when another user joins the chat
+- add a user registration page DONE
+- notify the user when another user joins the chat DONE
+- change the color of the message if a connect/disconnect message -- use type
 - require a user object to be present to display the chatroom, if not show login DONE
-- save user to the local-storage to ensure messages persist on refresh
+- save user to the local-storage to ensure messages persist on refresh DONE
 - add logout functionality
-- make it so that enter sends message
+- make it so that enter sends message -- needs fresh eyes
 - re-select text area after message sends
+- add react error handling
 
 
 - Add frontend functionality to join rooms 
