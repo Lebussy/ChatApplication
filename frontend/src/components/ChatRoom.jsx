@@ -1,7 +1,6 @@
 import MessageForm from './MessageForm'
 import ChatHistory from './ChatHistory'
 import { useEffect, useState } from 'react'
-import messageService from '../services/messages.js'
 import { socket } from '../socket.js'
 
 const ChatRoom = ({ user, setUser, notify }) => {
@@ -27,8 +26,12 @@ const ChatRoom = ({ user, setUser, notify }) => {
       setUser(null)
     })
 
-    socket.on('user connected', () => {
-      console.log('a user connected')
+    socket.on('user connected', (username) => {
+      setMessages(previous => previous.concat({user: username, content:'connected...', time: Date.now(), type: 'info'}))
+    })
+
+    socket.on('user disconnected', (username) => {
+      setMessages(previous => previous.concat({user: username, content:'disconnected...', time: Date.now(), type: 'info'}))
     })
 
     // For handling a message history event, containing the exisitng messages in the room 

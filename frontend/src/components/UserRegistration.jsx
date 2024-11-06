@@ -15,7 +15,7 @@ const UserRegistration = ({notify, setIsRegistering}) => {
       notify('User added', userData.username)
       setIsRegistering(false)
     } catch (err){
-      notify('Registration failed', err.message)
+      notify('Registration failed', err.response.data.error)
     }
   }
   return (
