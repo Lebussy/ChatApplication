@@ -5,7 +5,8 @@ import app from './app.js'
 import {createServer} from 'http'
 import {Server} from 'socket.io'
 import Message from './models/message.js'
-import User from './models/user.js'
+import jwt from 'jsonwebtoken'
+import socketHelper from './utils/socketHelper.js'
 
 // Creates an HTTP server for the express app to run on
 const httpServer = createServer(app)
@@ -17,18 +18,42 @@ const io = new Server(httpServer, {
   }
 })
 
+// Socket.io middlewear for ensuring authentication
+io.use((socket, next) => {
+  
+  const auth = socket.handshake.auth
+
+  try{
+    // Verifies the token and sets the auth attribute to the decoded token
+    const decoded = jwt.verify(auth.token, process.env.SECRET)
+    socket.handshake.auth = decoded
+    next()
+  } catch (e) {
+    // If token varification fails, passes a new error to the next middlewear
+    next(new Error('Not authorised'))
+  }
+})
+
+
 // Event handler for when a client connects to the socket server
 io.on('connect', async socket => {
-  logger.info('a user connected')
+  // Authorisation object from the client
+  const auth = socket.handshake.auth
+
+  // For notifying the other users that a user has connected
+  socket.broadcast.emit('user connected', auth.username)
+
+  // For sending the chat history of the current room
+  const chatHistory = await socketHelper.getMessageHistory()
+  socket.emit('room history', chatHistory)
+  
+  logger.info(`${auth.username} connected`)
 
   socket.on('disconnect', () => {
-    logger.info('a user disconnected')
+    logger.info(`${auth.username} disconnected`)
+    io.emit('user disconnected', auth.username)
   })
 
-  socket.on('user connected', () => {
-    socket.broadcast.emit('user connected')
-  })
-  
   socket.on('chat message', async (message) => {
     const timeRecieved = Date.now()
     // Emits the message to the connected sockets
@@ -41,7 +66,7 @@ io.on('connect', async socket => {
     // Saves the message to the database
     const newMessage = new Message({
       content: message.content,
-      user: tempUser._id,
+      user: auth.id,
       time: timeRecieved
     })
     await newMessage.save()

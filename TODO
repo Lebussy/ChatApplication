@@ -15,10 +15,14 @@
 - set up frontend to retrieve messages on first render DONE
 - display date and time of the message DONE
 - require users to sign-in and include user details with chat message 
-  - authorisation message to be sent by client after login
-  - add a client-side middlewear to ensure valid authorisation token valid with username on client-events
+  - auth attribute on socket instance set after login with token and user details DONE
+  - add a client-side middlewear to ensure valid authorisation token valid with username on client-events DONE
+  - add 'connect_error' event handler client-side. Sent when next called with error in server middlewear and log out DONE
+  - add a notification box for the frontend DONE
   - change the message initialisation to use an event instead
-  - require a user object to be present to display the chatroom, if not show login
+  - add a user registration page
+  - notify the user when another user joins the chat
+  - require a user object to be present to display the chatroom, if not show login DONE
   - save user to the local-storage to ensure messages persist on refresh
   - add logout functionality
   - 
