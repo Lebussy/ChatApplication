@@ -1,24 +1,15 @@
 import MessageForm from './MessageForm'
 import ChatHistory from './ChatHistory'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import messageService from '../services/messages.js'
 import { socket } from '../socket.js'
 
-const ChatRoom = ({setMessages, messages, user}) => {
-  // Once a chat ro
+const ChatRoom = ({ user, setUser, notify }) => {
+  // State for storing messages
+  const [messages, setMessages] = useState([])
 
-  // For connecting to the socket.io server and initialising messages
+  // For authorising and connecting to the socket.io server and initialising messages
   useEffect(() => {
-    socket.connect()
-    const initialiseMessages = async () => {
-      const initialMessages = await messageService.getInitialMessages()
-      setMessages(initialMessages)
-    }
-    initialiseMessages()
-  }, [])
-
-   // For registering the socket event handlers
-   useEffect(() => {
     socket.on('connect', () => {
       console.log('Connected to server')
       socket.emit('user connected')
@@ -28,13 +19,35 @@ const ChatRoom = ({setMessages, messages, user}) => {
       console.log('disconnected from server')
     })
 
+    // Event handler for failed connection
+    socket.on('connect_error', err => {
+      notify(err.message, `please re-login`)
+      console.log('Connection to server failed!! Message from server:', err.message)
+      window.localStorage.removeItem('chat user')
+      setUser(null)
+    })
+
     socket.on('user connected', () => {
       console.log('a user connected')
+    })
+
+    // For handling a message history event, containing the exisitng messages in the room 
+    socket.on('room history', (history) => {
+      setMessages(history)
     })
 
     socket.on('chat message', (message) => {
       setMessages(previous => previous.concat(message))
     })
+
+    // Sets the authorisation object for the connection before connecting
+    socket.auth = user
+    socket.connect()
+  }, [])
+
+   // For registering the socket event handlers
+   useEffect(() => {
+    
   }, [])
 
   

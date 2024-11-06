@@ -1,7 +1,7 @@
 import userService from '../services/user.js'
 import { socket } from '../socket.js'
 
-const Login = ({setUser}) => {
+const Login = ({setUser, notify}) => {
 
   // Event handler for logging in
   const handleLogin = async event => {
@@ -13,16 +13,17 @@ const Login = ({setUser}) => {
     try{
       const response = await userService.login({username, password})
       setUser(response)
+      window.localStorage.setItem('chat user', JSON.stringify(response))
       socket.connect()
     } catch (e) {
-      console.log(e.response.data.error)
+      notify(`Login failed`, e.response.data.error)
     }
   }
   return (
     <div className='loginDiv'>
       <form onSubmit={handleLogin}>
-        <input name='username' type='text' required={true} placeholder='username'/>
-        <input name='password' type='password' required={true} placeholder='password'/>
+        <input autoComplete='username' name='username' type='text' required={true} placeholder='username'/>
+        <input autoComplete='current-password' name='password' type='password' required={true} placeholder='password'/>
         <button type='submit'>login</button>
       </form>
     </div>
