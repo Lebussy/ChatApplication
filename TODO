@@ -14,18 +14,20 @@
 - update message json structure to use 'content' across application DONE
 - set up frontend to retrieve messages on first render DONE
 - display date and time of the message DONE
-- require users to sign-in and include user details with chat message 
-  - auth attribute on socket instance set after login with token and user details DONE
-  - add a client-side middlewear to ensure valid authorisation token valid with username on client-events DONE
-  - add 'connect_error' event handler client-side. Sent when next called with error in server middlewear and log out DONE
-  - add a notification box for the frontend DONE
-  - change the message initialisation to use an event instead
-  - add a user registration page
-  - notify the user when another user joins the chat
-  - require a user object to be present to display the chatroom, if not show login DONE
-  - save user to the local-storage to ensure messages persist on refresh
-  - add logout functionality
-  - 
+- require users to sign-in and include user details with chat message DONE
+- auth attribute on socket instance set after login with token and user details DONE
+- add a client-side middlewear to ensure valid authorisation token valid with username on client-events DONE
+- add 'connect_error' event handler client-side. Sent when next called with error in server middlewear and log out DONE
+- add a notification box for the frontend DONE
+- change the message initialisation to use an event instead DONE
+
+- add a user registration page
+- notify the user when another user joins the chat
+- require a user object to be present to display the chatroom, if not show login DONE
+- save user to the local-storage to ensure messages persist on refresh
+- add logout functionality
+- make it so that enter sends message
+- re-select text area after message sends
 
 
 - Add frontend functionality to join rooms 

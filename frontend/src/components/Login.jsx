@@ -1,7 +1,7 @@
 import userService from '../services/user.js'
 import { socket } from '../socket.js'
 
-const Login = ({setUser, notify}) => {
+const Login = ({setUser, notify, setIsRegistering}) => {
 
   // Event handler for logging in
   const handleLogin = async event => {
@@ -25,6 +25,9 @@ const Login = ({setUser, notify}) => {
         <input autoComplete='username' name='username' type='text' required={true} placeholder='username'/>
         <input autoComplete='current-password' name='password' type='password' required={true} placeholder='password'/>
         <button type='submit'>login</button>
+        <button type="button" onClick={() => {
+          setIsRegistering(true)
+        }}>Register</button>
       </form>
     </div>
   )

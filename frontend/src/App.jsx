@@ -1,6 +1,7 @@
 import ChatRoom from './components/Chatroom.jsx'
 import Login from './components/Login.jsx'
 import Notification from './components/Notification.jsx'
+import UserRegistration from './components/UserRegistration.jsx'
 import { useEffect, useState } from 'react'
 
 import './styles.css'
@@ -11,6 +12,10 @@ const App = () => {
 
   // State for storing the notification
   const [notification, setNotification] = useState(null)
+
+  // Not learnt express routers yet
+  // State for storing a flag for user registration
+  const [isRegistering, setIsRegistering] = useState(true)
 
   // Effect hook for retrieving user from localstorage
   useEffect(() => {
@@ -41,7 +46,14 @@ const App = () => {
   // Method for rendering the login form
   const renderLoginForm = () => {
     return (
-      <Login setUser={setUser} notify={notify}></Login>
+      <Login setUser={setUser} notify={notify} setIsRegistering={setIsRegistering}></Login>
+    )
+  }
+
+  // Method for rendering the registration form
+  const renderRegistrationForm = () => {
+    return (
+      <UserRegistration setIsRegistering={setIsRegistering} notify={notify}></UserRegistration>
     )
   }
   
@@ -50,7 +62,8 @@ const App = () => {
     <div>
       <Notification notification={notification}></Notification>
       {user && renderChatroom()}
-      {!user && renderLoginForm()}
+      {!user && !isRegistering && renderLoginForm()}
+      {!user && isRegistering && renderRegistrationForm()}
     </div>
   )
 

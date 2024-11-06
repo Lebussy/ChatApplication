@@ -12,7 +12,7 @@ const MessageForm = ({user}) => {
       content, 
       user: user.username
     });
-    event.target.message.value = ""; 
+    event.target.message.value = "";
   };
 
 

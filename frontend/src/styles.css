@@ -115,6 +115,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin: 4px;
 }
 
 .loginDiv button:hover {
@@ -139,5 +140,43 @@
 
 .notification span {
   margin: 0 5px;
+}
+
+.registrationDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgb(91, 125, 85);
+}
+
+.registrationDiv form {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.registrationDiv input {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid rgb(168, 144, 144);
+  border-radius: 5px;
+}
+
+.registrationDiv button {
+  padding: 10px;
+  background-color: rgb(80, 80, 102);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 4px;
+}
+
+.registrationDiv button:hover {
+  background-color: rgb(60, 60, 82);
 }
 

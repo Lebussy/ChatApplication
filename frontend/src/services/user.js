@@ -8,4 +8,10 @@ const login = async (credentials) => {
   return response.data
 }
 
-export default {login}
+// Method for registering a new user
+const register = async (credentials) => {
+  const response = await axios.post(`${baseURL}/users`, credentials)
+  return response.data
+}
+
+export default {login, register}
