@@ -20,10 +20,15 @@ const ChatRoom = ({ user, setUser, notify }) => {
 
     // Event handler for failed connection
     socket.on('connect_error', err => {
-      notify(err.message, `please re-login`)
-      console.log('Connection to server failed!! Message from server:', err.message)
-      window.localStorage.removeItem('chat user')
-      setUser(null)
+      // For notifying if connection to the server failed
+      if (err.message.includes('xhr poll error')){
+        notify('Network Error', 'Please try again later')
+      } else if (err.message.includes('expired')){
+        notify('Authentication Expired', 'Please re-login')
+        setUser(null)
+        window.localStorage.removeItem('chat user')
+      }
+      console.log('Connection to server failed!! Message from server:', err.name, err.message)
     })
 
     socket.on('user connected', (username) => {
@@ -48,16 +53,18 @@ const ChatRoom = ({ user, setUser, notify }) => {
     socket.connect()
   }, [])
 
-   // For registering the socket event handlers
-   useEffect(() => {
-    
-  }, [])
-
   
   return (
+    <div id='divBehindChatroom'>
+      <button id='logoutbutton' onClick={() => {
+        setUser(null)
+        window.localStorage.removeItem('chat user')
+        socket.disconnect()
+      }}>Logout</button>
     <div className="chatroom">
       <ChatHistory messages={messages}/>
       <MessageForm user={user}/>
+    </div>
     </div>
   )
 }

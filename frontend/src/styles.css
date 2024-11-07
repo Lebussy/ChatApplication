@@ -1,17 +1,48 @@
 *{
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .chatroom{
   background-color: rgb(91, 125, 85);
   min-height: 300px; /* Adjust the minimum height */
-  max-height: 500px; /* Set a maximum height */
-  width: auto;
+  max-height: 95vh; /* Set a maximum height */
+  width: 400px;
   max-width: 400px;
   margin: auto;
   border: 2px solid rgb(168, 144, 144);
   display: flex;
   flex-direction: column;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#logoutbutton{
+  position: absolute; /* Ensure the login button is positioned */
+  z-index: 2; /* Higher z-index to stack on top of .chatroom */
+  top: 10px; /* Adjust as needed */
+  right: 10px; /* Adjust as needed */
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#divBehindChatroom {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: rgb(91, 125, 85);
+  overflow: hidden;
+  
 }
 
 .messageform{
@@ -20,8 +51,10 @@
   width: 100%;
   background-color: rgb(80, 80, 102);
   padding: 5px; /* Add padding for better spacing */
-  box-sizing: border-box; /* Ensure padding is included in the width */
+  box-sizing: borde
+  r-box; /* Ensure padding is included in the width */
   flex-shrink: 0; /* Prevent shrinking */
+  border-radius: 10px;
 }
 
 .messageform form {
@@ -50,7 +83,7 @@
   padding: 10px;
   flex-grow: 1;
   overflow-y: auto;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   border-bottom: 2px solid rgb(168, 144, 144);
 }
 

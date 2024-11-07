@@ -16,7 +16,11 @@ const Login = ({setUser, notify, setIsRegistering}) => {
       window.localStorage.setItem('chat user', JSON.stringify(response))
       socket.connect()
     } catch (e) {
-      notify(`Login failed`, e.response.data.error)
+      if (e.message === 'Network Error'){
+        notify('Network Error', 'Please try again later.')
+      } else {
+        notify(`Login failed`, e.response.data.error)
+      }
     }
   }
   return (

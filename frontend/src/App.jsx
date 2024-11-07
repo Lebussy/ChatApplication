@@ -15,7 +15,7 @@ const App = () => {
 
   // Not learnt express routers yet
   // State for storing a flag for user registration
-  const [isRegistering, setIsRegistering] = useState(true)
+  const [isRegistering, setIsRegistering] = useState(false)
 
   // Effect hook for retrieving user from localstorage
   useEffect(() => {

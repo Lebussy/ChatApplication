@@ -19,13 +19,14 @@ const MessageForm = ({user}) => {
     }
   };
 
-  // 'Enter' keydown event for sumitting the closest form to the textarea
-  const enterKeydownHandler = (event) => {
-    if (event.key === 'Enter' && !event.shiftKey){  
-      event.preventDefault()
-      document.getElementById('sendMessageForm').submit()
+  // 'Enter' keydown event in text area calls the send message event
+  const handleEnterKeydown = event => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      // Calls the sendMessage funciton with a mock event object to satisfy the functions expectation of an event
+      sendMessage({ preventDefault: () => {}, target: { message: textareaRef.current } });
     }
-  }
+  };
 
   return (
     <div className="messageform" ref={messageFormRef}>
@@ -33,7 +34,7 @@ const MessageForm = ({user}) => {
         <textarea
           name="message"
           ref={textareaRef}
-          onKeyDown={enterKeydownHandler}
+          onKeyDown={handleEnterKeydown}
         ></textarea>
         <button type='submit'>Send</button>
       </form>
