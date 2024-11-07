@@ -23,13 +23,17 @@
 
 - add a user registration page DONE
 - notify the user when another user joins the chat DONE
-- change the color of the message if a connect/disconnect message -- use type
 - require a user object to be present to display the chatroom, if not show login DONE
 - save user to the local-storage to ensure messages persist on refresh DONE
-- add logout functionality
+- add logout functionality DONE
+- add react error handling DONE -- Happens locally in component 
+- fix xhr poll error message when network disconnect DONE
 - make it so that enter sends message -- needs fresh eyes
 - re-select text area after message sends
-- add react error handling
+- make the connection messages more persistant
+- change the color of the message if a connect/disconnect message -- use type of message
+- show who is connected to the room or 'online'
+
 
 
 - Add frontend functionality to join rooms 

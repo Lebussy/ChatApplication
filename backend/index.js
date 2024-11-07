@@ -30,7 +30,7 @@ io.use((socket, next) => {
     next()
   } catch (e) {
     // If token varification fails, passes a new error to the next middlewear
-    next(new Error('Not authorised'))
+    next(new Error(e.message))
   }
 })
 
@@ -42,6 +42,9 @@ io.on('connect', async socket => {
 
   // For notifying all connected clients that a user has connected
   io.emit('user connected', auth.username)
+
+  // Logging the user connecting
+  console.log(`${auth.username} connected`)
 
   // For sending the chat history of the current room
   const chatHistory = await socketHelper.getMessageHistory()
