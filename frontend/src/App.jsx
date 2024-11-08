@@ -5,6 +5,7 @@ import UserRegistration from './components/UserRegistration.jsx'
 import { useEffect, useState } from 'react'
 
 import './styles.css'
+import Homepage from './components/Homepage.jsx'
 
 const App = () => {
   // State for storing the user
@@ -37,9 +38,9 @@ const App = () => {
   }
 
   // Method for rendering the chatRoom component
-  const renderChatroom = () => {
+  const renderHomepage = () => {
     return (
-      <ChatRoom user={user} setUser={setUser} notify={notify}></ChatRoom>
+      <Homepage user={user} setUser={setUser} notify={notify}></Homepage>
     )
   }
 
@@ -61,7 +62,7 @@ const App = () => {
   return (
     <div>
       <Notification notification={notification}></Notification>
-      {user && renderChatroom()}
+      {user && renderHomepage()}
       {!user && !isRegistering && renderLoginForm()}
       {!user && isRegistering && renderRegistrationForm()}
     </div>

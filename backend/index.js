@@ -56,6 +56,7 @@ io.on('connect', async socket => {
     time: Date.now(),
     type: 'CONNECT'
   }
+  
   io.emit('user connected', connectionMessage)
 
   // For saving the connection message to the database
