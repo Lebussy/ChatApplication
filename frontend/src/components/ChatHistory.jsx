@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import Message from "./Message";
 
-const ChatHistory = ({ messages }) => {
+const ChatHistory = ({ messages, user }) => {
   const chatHistoryRef = useRef(null);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const ChatHistory = ({ messages }) => {
     <div id="chatHistoryBox" ref={chatHistoryRef}>
       <ul>
         {messages.map((message, index) => (
-          <Message key={index} message={message} />
+          <Message user={user} key={index} message={message} />
         ))}
       </ul>
     </div>

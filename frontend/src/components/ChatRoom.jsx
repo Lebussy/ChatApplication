@@ -80,7 +80,7 @@ const ChatRoom = ({ user, setUser, notify }) => {
       }}>Logout</button>
     <div className="chatroom">
       <RoomInfo onlineUsersCount={onlineUsersCount}></RoomInfo>
-      <ChatHistory messages={messages}/>
+      <ChatHistory messages={messages} user={user}/>
       <MessageForm user={user}/>
     </div>
     </div>

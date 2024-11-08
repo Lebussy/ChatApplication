@@ -123,11 +123,11 @@
 
 #chatHistoryBox ul {
   list-style-type: none;
-  padding: 0;
+  padding: 2px;
   margin: 0;
 }
 
-#chatHistoryBox li {
+#chatHistoryBox .userMessage {
   padding: 5px;
   margin-bottom: 10px;
   border-radius: 5px;
@@ -135,9 +135,25 @@
   word-wrap: break-word;
 }
 
+#chatHistoryBox .connectMessage {
+  color: rgb(83, 184, 65);
+  margin-bottom: 5px;
+}
+
+#chatHistoryBox .disconnectMessage {
+  color: rgb(244, 32, 32);
+  margin-bottom: 5px;
+}
+
 #chatHistoryBox li .user {
   font-weight: bold;
   margin-right: 5px;
+}
+
+#chatHistoryBox li .self {
+  font-weight: bold;
+  margin-right: 5px;
+  color: #469fff;
 }
 
 #chatHistoryBox li .message-text {
