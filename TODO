@@ -26,17 +26,31 @@
 - require a user object to be present to display the chatroom, if not show login DONE
 - save user to the local-storage to ensure messages persist on refresh DONE
 - add logout functionality DONE
-- add react error handling DONE -- Happens locally in component 
+- add react error handling (Happens locally in component) DONE 
 - fix xhr poll error message when network disconnect DONE
-- make it so that enter sends message -- needs fresh eyes
-- re-select text area after message sends
-- make the connection messages more persistant
-- change the color of the message if a connect/disconnect message -- use type of message
-- show who is connected to the room or 'online'
+- make it so that enter sends message DONE 
+- make the connection messages more persistant DONE
+- change the color of the message if a connect/disconnect message DONE
+- show how many users online DONE
+  - add a roominfo div to display the room name and the users currently connected DONE
+  - add a counter to the backend to keep track of number of online users DONE
+  - add an increment for users count to keep track of number of online users DONE
+    - event handler for initial user count DONE
+    - update the user count when user disconnects frontend DONE
+  - frontend user count updates when user disconnects or connects DONE
+- add a message type to message model DONE
+- message type set to message for messages from users DONE
+- message type set to info for connection messages DONE
+- connection messages persisted to database DONE
+- change the css for an info message
+- make messages from the current user a diff color
+
 
 
 
 - Add frontend functionality to join rooms 
+  -List of rooms shows live how many members connected
+
 - Add backend functionality to join rooms
 
 USER ROUTE:
@@ -52,6 +66,8 @@ USER TESTS:
   - write test for weak password DONE (fails)
 
 LATER: 
+- switch to redis to store the online users counter
+- think about the guarantee of message order with mongo and if better solution needed frontend
 - expand user details to include DOB and fullname
 - add user restrictions based on age?
 - integrate hatespeach api

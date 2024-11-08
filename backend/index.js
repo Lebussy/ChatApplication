@@ -8,6 +8,9 @@ import Message from './models/message.js'
 import jwt from 'jsonwebtoken'
 import socketHelper from './utils/socketHelper.js'
 
+// Countet for storing number of online users
+let onlineUsers = 0;
+
 // Creates an HTTP server for the express app to run on
 const httpServer = createServer(app)
 
@@ -17,6 +20,7 @@ const io = new Server(httpServer, {
     origin: 'http://localhost:5173'
   }
 })
+
 
 // Socket.io middlewear for ensuring authentication
 io.use((socket, next) => {
@@ -34,43 +38,74 @@ io.use((socket, next) => {
   }
 })
 
-
 // Event handler for when a client connects to the socket server
 io.on('connect', async socket => {
   // Authorisation object from the client
   const auth = socket.handshake.auth
 
+  // Sends the current number of online users
+  socket.emit('online users count', onlineUsers)
+
+  // For incrementing the online users count after connection and initialisation
+  onlineUsers++
+  console.log(`user connected, ${onlineUsers} online`)
+
   // For notifying all connected clients that a user has connected
-  io.emit('user connected', auth.username)
+  const connectionMessage = {
+    content: `${auth.username} connected...`,
+    time: Date.now(),
+    type: 'INFO'
+  }
+  io.emit('user connected', connectionMessage)
 
-  // Logging the user connecting
-  console.log(`${auth.username} connected`)
+  // For saving the connection message to the database
+  const newConnectionMessage = new Message(connectionMessage)
+  await newConnectionMessage.save()
 
-  // For sending the chat history of the current room
+  
+  // For sending the chat history of the current room to the connected user
   const chatHistory = await socketHelper.getMessageHistory()
   socket.emit('room history', chatHistory)
 
-  socket.on('disconnect', () => {
+  // Handles disconnect event
+  socket.on('disconnect', async () => {
     logger.info(`${auth.username} disconnected`)
-    io.emit('user disconnected', auth.username)
+    onlineUsers--
+    logger.info(`${onlineUsers} online`)
+
+    // Disconnection message for the chatroom
+    const disconnectMessage = {
+      content: `${auth.username} disconnected...`,
+      time: Date.now(),
+      type: 'INFO'
+    }
+    
+    // Emits a user disconnected event to the connected clients with the disconnect message
+    io.emit('user disconnected', disconnectMessage)
+
+    // Saves the user disconnect message to the chat history
+    const newDisconnectMessage = new Message(disconnectMessage)
+    await newDisconnectMessage.save()    
   })
 
   socket.on('chat message', async (message) => {
+
     const timeRecieved = Date.now()
     // Emits the message to the connected sockets
     io.emit('chat message', {
       ...message,
       time: timeRecieved,
-      id: String(Math.floor(Math.random() * 100000))
+      type: 'MESSAGE'
     })
 
     // Saves the message to the database
-    const newMessage = new Message({
+    const newChatMessage = new Message({
       content: message.content,
-      user: auth.id,
-      time: timeRecieved
-    })
-    await newMessage.save()
+      time: timeRecieved,
+      type: 'MESSAGE',
+      user: auth.id
+    })    
+    await newChatMessage.save()
   })
 })
 
