@@ -54,7 +54,7 @@ io.on('connect', async socket => {
   const connectionMessage = {
     content: `${auth.username} connected...`,
     time: Date.now(),
-    type: 'INFO'
+    type: 'CONNECT'
   }
   io.emit('user connected', connectionMessage)
 
@@ -77,7 +77,7 @@ io.on('connect', async socket => {
     const disconnectMessage = {
       content: `${auth.username} disconnected...`,
       time: Date.now(),
-      type: 'INFO'
+      type: 'DISCONNECT'
     }
     
     // Emits a user disconnected event to the connected clients with the disconnect message
