@@ -21,6 +21,23 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+#roominfo {
+  min-height: fit-content;
+  width: 100%;
+  background-color: rgb(80, 80, 102);
+  color: white;
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid rgb(168, 144, 144);
+  font-size: larger;
+  font-style: italic;
+}
+
+#usercount {
+  padding-left: 15%;
+}
+
 #logoutbutton{
   position: absolute; /* Ensure the login button is positioned */
   z-index: 2; /* Higher z-index to stack on top of .chatroom */
@@ -32,6 +49,22 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+#leavebutton {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 4px;
+  margin-left: auto;
+  align-self: flex-end;
+}
+
+#leavebutton:hover,#logoutbutton:hover {
+  background-color: rgb(60, 60, 82);
 }
 
 #divBehindChatroom {
@@ -54,7 +87,7 @@
   box-sizing: borde
   r-box; /* Ensure padding is included in the width */
   flex-shrink: 0; /* Prevent shrinking */
-  border-radius: 10px;
+ 
 }
 
 .messageform form {
@@ -77,6 +110,7 @@
   align-self: flex-end; /* Align the button to the bottom */
   margin: 2px;
   border-radius: 20px;
+  cursor: pointer;
 }
 
 #chatHistoryBox {
