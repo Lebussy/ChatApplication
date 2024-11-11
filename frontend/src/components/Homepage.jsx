@@ -5,13 +5,29 @@ import { socket } from '../socket.js'
 
 const Homepage = ({user, setUser, notify}) => {
   // State for storing roomid
-  const [roomId, setRoomId] = useState(1)
+  const [room, setRoom] = useState(null)
   
   // State for storing messages
   const [messages, setMessages] = useState([])
 
   // State for storing the number of online users
   const [onlineUsersCount, setOnlineUsersCount] = useState(0)
+
+  // State for storing the list of rooms available to join
+  const [roomsList, setRoomsList] = useState([
+    {
+      id: 1,
+      connected: 3
+    }, 
+    {
+      id: 2,
+      connected: 2
+    },
+    {
+      id: 3,
+      connected: 1
+    }
+  ])
 
   // on 'connect' event handler
   const onConnect = () => {
@@ -38,6 +54,7 @@ const Homepage = ({user, setUser, notify}) => {
       setMessages([])
     }
     console.log('Connection to server failed!! Message from server:', err.name, err.message)
+    console.error(err)
   }
 
   // Event handler for online user count info
@@ -97,6 +114,12 @@ const Homepage = ({user, setUser, notify}) => {
     };
   }, [])
 
+  // Function for leaving a room and clearing room and message data
+  const handleLeaveRoom = () => {
+    setMessages([])
+    setRoom(null)
+  }
+
   // Function for rendering chatroom if there is a room id
   const renderChatroom = () => {
     return (
@@ -104,6 +127,8 @@ const Homepage = ({user, setUser, notify}) => {
         setUser={setUser} 
         notify={notify} 
         messages={messages} 
+        room={room}
+        handleLeaveRoom={handleLeaveRoom}
         onlineUsersCount={onlineUsersCount}></ChatRoom>
     )
   }
@@ -111,15 +136,20 @@ const Homepage = ({user, setUser, notify}) => {
   // Function for rendering the room selector
   const renderRoomSelector = () => {
     return (
-      <RoomSelector setRoomId={setRoomId}></RoomSelector>
+      <RoomSelector roomsList={roomsList} setRoom={setRoom} notify={notify}></RoomSelector>
     )
   }
 
   return (
-    <>
-    {roomId && renderChatroom()}
-    {!roomId && renderRoomSelector()}
-    </>
+    <div id='homepageDiv'>
+      <button id='logoutbutton' onClick={() => {
+        setUser(null)
+        window.localStorage.removeItem('chat user')
+      }}>Logout</button>
+    {room && renderChatroom()}
+    {!room && renderRoomSelector()}
+    </div>
+  
   )
 }
 

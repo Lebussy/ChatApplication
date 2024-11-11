@@ -14,7 +14,6 @@ const Login = ({setUser, notify, setIsRegistering}) => {
       const response = await userService.login({username, password})
       setUser(response)
       window.localStorage.setItem('chat user', JSON.stringify(response))
-      socket.connect()
     } catch (e) {
       if (e.message === 'Network Error'){
         notify('Network Error', 'Please try again later.')

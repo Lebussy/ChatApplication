@@ -3,7 +3,7 @@
   overflow: hidden;
 }
 
-.chatroom{
+.chatroom, #roomselector{
   background-color: rgb(91, 125, 85);
   min-height: 300px; /* Adjust the minimum height */
   max-height: 95vh; /* Set a maximum height */
@@ -21,7 +21,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-#roominfo {
+#roominfo, .titlediv {
   min-height: fit-content;
   width: 100%;
   background-color: rgb(80, 80, 102);
@@ -32,6 +32,11 @@
   border-bottom: 2px solid rgb(168, 144, 144);
   font-size: larger;
   font-style: italic;
+}
+
+.title{
+  text-align: center;
+  width: 100%;
 }
 
 #usercount {
@@ -67,7 +72,7 @@
   background-color: rgb(60, 60, 82);
 }
 
-#divBehindChatroom {
+#homepageDiv {
   position: relative;
   display: flex;
   justify-content: center;
@@ -87,7 +92,6 @@
   box-sizing: borde
   r-box; /* Ensure padding is included in the width */
   flex-shrink: 0; /* Prevent shrinking */
- 
 }
 
 .messageform form {
@@ -113,18 +117,28 @@
   cursor: pointer;
 }
 
-#chatHistoryBox {
-  padding: 10px;
+#chatHistoryBox, #roomslist {
+  padding-left: 0;
   flex-grow: 1;
   overflow-y: auto;
   background-color: rgb(255, 255, 255);
   border-bottom: 2px solid rgb(168, 144, 144);
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 #chatHistoryBox ul {
   list-style-type: none;
   padding: 2px;
   margin: 0;
+}
+
+.roomli {
+  padding: 5px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: rgb(230, 230, 230);
+  word-wrap: break-word;
 }
 
 #chatHistoryBox .userMessage {
@@ -260,6 +274,40 @@
 }
 
 .registrationDiv button:hover {
+  background-color: rgb(60, 60, 82);
+}
+
+.roomli {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: rgb(230, 230, 230);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.roomli .room-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.roomli .room-info span {
+  margin-bottom: 5px;
+}
+
+.roomli button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2em; /* Increase the font size */
+}
+
+.roomli button:hover {
   background-color: rgb(60, 60, 82);
 }
 

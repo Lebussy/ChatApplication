@@ -2,20 +2,15 @@ import MessageForm from './MessageForm'
 import ChatHistory from './ChatHistory'
 import RoomInfo from './RoomInfo.jsx'
 
-const ChatRoom = ({ user, setUser, onlineUsersCount, messages}) => {
+const ChatRoom = ({ user, messages, room, handleLeaveRoom, notify, onlineUsersCount}) => {
   
   return (
-    <div id='divBehindChatroom'>
-      <button id='logoutbutton' onClick={() => {
-        setUser(null)
-        window.localStorage.removeItem('chat user')
-      }}>Logout</button>
     <div className="chatroom">
-      <RoomInfo onlineUsersCount={onlineUsersCount}></RoomInfo>
+      <RoomInfo onlineUsersCount={onlineUsersCount} notify={notify} room={room} handleLeaveRoom={handleLeaveRoom}></RoomInfo>
       <ChatHistory messages={messages} user={user}/>
-      <MessageForm user={user}/>
+      <MessageForm roomId={room.id} user={user}/>
     </div>
-    </div>
+    
   )
 }
 

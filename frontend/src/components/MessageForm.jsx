@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { socket } from "../socket";
 
-const MessageForm = ({user}) => {
+const MessageForm = ({user, roomId}) => {
   const textareaRef = useRef(null)
   const messageFormRef = useRef(null)
 
@@ -13,7 +13,8 @@ const MessageForm = ({user}) => {
     if (content !== ''){
       socket.emit('chat message', {
         content, 
-        user: user.username
+        user: user.username,
+        roomId
       });
       event.target.message.value = ""
     }
