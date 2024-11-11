@@ -19,6 +19,10 @@ const messageSchema = mongoose.Schema({
   time: {
     type: Date,
     default: Date.now
+  },
+  room: {
+    type: String,
+    required: true
   }
 },{
   toJSON: {

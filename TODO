@@ -48,15 +48,25 @@
 
 
 - Add frontend functionality to join rooms 
-  - refactor socket.io code into connection and eventhandler modules
-  - add cleanup functions to de-register functions
-  - Raise state in Chatroom and socket event handlers to a homepage component that renders the Chatroom
-  - Add 'room' state that conditionally renders the Chatroom if room exists
-  - Create a roomslist component that renders a list of chatrooms that can be joined
-  - List of rooms shows live how many members connecte
-  - Send joining of rooms as requests to ensure race conditions not a factor
+  - add cleanup functions to de-register functions DONE
+  - Raise state in Chatroom and socket event handlers to a homepage component that renders the Chatroom DONE * (thought: maybe we dont want to connect to socket server unless we are in a room? Figure out way of tracking users in a room after)
+  - Add 'room' state that conditionally renders the Chatroom if room exists DONE
+  - Create a roomslist component that renders a list of chatrooms that can be joined DONE
+  - List of rooms shows how many members connected DONE
+  - add join room request to send to backend when join pressed DONE
+  - add leave room request to send to backend when leave pressed DONE
+  - updated leave room button to clear message history DONE
+  - refreshing page keeps user in room if connected - local storage? isInRoom state variable? (could be cleared on a 'clear room' event initiated by the server)
 
 - Add backend functionality to join rooms
+  - join requests adds a user to a room DONE
+  - join request sends message history to user DONE
+  - connection message emitted when users connect to a room DONE
+  - disconnect message emitted when users leave a room DONE
+  - backend keeps track of number of users in each room. DONE
+  - If user is not in a room, sends updates with all information about the rooms to update rooms list
+  - Fix bug where user not counted as disconnected from room if refresh page
+  - research how to test socket.io express applications
 
 USER ROUTE:
 - test that a new user can be added postman DONE
