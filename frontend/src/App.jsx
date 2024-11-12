@@ -18,18 +18,21 @@ const App = () => {
   // State for storing a flag for user registration
   const [isRegistering, setIsRegistering] = useState(false)
 
-  // Effect hook for retrieving user from localstorage
+  // Effect hook for retrieving user from localStorage
   useEffect(() => {
-    if (!user){
-      try{
-        setUser(JSON.parse(window.localStorage.getItem('chat user')))
-      } catch {
-        setUser(null)
-        window.localStorage.removeItem('chat user')
+    try {
+      const storedUser = window.localStorage.getItem('chat user')
+      if (storedUser) {
+        setUser(JSON.parse(storedUser))
       }
+    } catch (error) {
+      console.error('Failed to parse user from localStorage', error)
+      setUser(null)
+      window.localStorage.removeItem('chat user')
     }
-  }, [])
+  }, []);
 
+  // Method for notifying user with popup
   const notify = (type, message) => {
     setNotification({type, message})
     setTimeout(() => {

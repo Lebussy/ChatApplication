@@ -16,7 +16,7 @@ const RoomInfo = ({room, handleLeaveRoom, notify, onlineUsersCount}) => {
 
   return (
     <div id="roominfo">
-      <span id="roomnumber">Room: {room.id}</span>
+      <span id="roomnumber">Room: {room.name}</span>
       <span id="usercount">Online: {onlineUsersCount}</span>
       <button id="leavebutton" onClick={() => handleLeave()}>Leave Room</button>
     </div>

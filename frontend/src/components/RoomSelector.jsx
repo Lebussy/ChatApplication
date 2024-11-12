@@ -1,18 +1,8 @@
 import Room from './Room'
-import { socket } from '../socket.js'
 
-const RoomSelector = ({setRoom, roomsList, notify}) => {
+const RoomSelector = ({roomsList, handleJoinRoom}) => {
 
-  const handleJoinRoom = (room) => {
-    socket.timeout(5000).emit('join room', room.id, (err, _response) => {
-      if (err) {
-        console.log(err.message)
-        notify('Join Error', `Could not join room ${room.id}`)
-        return
-      }
-      setRoom(room)
-    })
-  }
+  
 
   return (<div id="roomselector"> 
     <div className="titlediv">

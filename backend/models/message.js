@@ -21,7 +21,8 @@ const messageSchema = mongoose.Schema({
     default: Date.now
   },
   room: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'Room',
     required: true
   }
 },{

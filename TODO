@@ -56,7 +56,9 @@
   - add join room request to send to backend when join pressed DONE
   - add leave room request to send to backend when leave pressed DONE
   - updated leave room button to clear message history DONE
-  - refreshing page keeps user in room if connected - local storage? isInRoom state variable? (could be cleared on a 'clear room' event initiated by the server)
+  - refreshing page keeps user in room if connected to room DONE
+    - send check room event to check if the user is connected to the room in local storage DONE
+    - emits 'join room' if not connected DONE
 
 - Add backend functionality to join rooms
   - join requests adds a user to a room DONE
@@ -64,9 +66,12 @@
   - connection message emitted when users connect to a room DONE
   - disconnect message emitted when users leave a room DONE
   - backend keeps track of number of users in each room. DONE
-  - If user is not in a room, sends updates with all information about the rooms to update rooms list
-  - Fix bug where user not counted as disconnected from room if refresh page
+  - If user is not in a room, sends updates with all information about the rooms to update rooms list 
+  - Fix bug where user not counted as disconnected from room if refresh page DONE
+    - may be easier to debug if keeping track of list of usernames?
   - research how to test socket.io express applications
+  - respond to 'check room' events by checking if user connected to the room DONE
+  - send message history with the room connection if connected DONE
 
 USER ROUTE:
 - test that a new user can be added postman DONE

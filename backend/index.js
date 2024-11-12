@@ -5,10 +5,11 @@ import app from './app.js'
 import {createServer} from 'http'
 import {Server} from 'socket.io'
 import Message from './models/message.js'
+import Room from './models/room.js'
 import jwt from 'jsonwebtoken'
 import socketHelper from './utils/socketHelper.js'
 
-// Countet for storing number of online users
+// Counter for storing number of online users
 const connectedUsers = {}
 
 // Creates an HTTP server for the express app to run on
@@ -21,7 +22,7 @@ const io = new Server(httpServer, {
   },
   connectionStateRecovery: {
     skipMiddlewares: false,
-    maxDisconnectionDuration: 1*60*1000
+    maxDisconnectionDuration: 3*1000
   }
 })
 
@@ -29,7 +30,6 @@ const io = new Server(httpServer, {
 // Socket.io middlewear for ensuring authentication
 io.use((socket, next) => {
   const auth = socket.handshake.auth
-
   try{
     // Verifies the token and sets the auth attribute to the decoded token
     const decoded = jwt.verify(auth.token, process.env.SECRET)
@@ -43,17 +43,18 @@ io.use((socket, next) => {
 
 // Event handler for when a client connects to the socket server
 io.on('connect', async socket => {
+
   // Authorisation object from the client
   const auth = socket.handshake.auth
-
   console.log(`${auth.username} socket connected`, `RESTORED?: ${socket.recovered}`)
+
+  // Emits the available rooms to join to the client
+  const availableRooms = await Room.find({})
+  socket.emit('rooms list', availableRooms)
 
   // For handling a join room ack
   socket.on('join room', async (roomId, callback) => {
     console.log('join room request recieved!!')
-
-    // Checks first if the socket already connected to a room
-    console.log(`socket is connected to the following rooms already:`, socket.rooms)
 
     // Joins the socket to the room
     socket.join(roomId)
@@ -121,23 +122,44 @@ io.on('connect', async socket => {
       // And saved to the database
       const newDisconnectMessage = new Message(disconnectMessage)
       await newDisconnectMessage.save()
-    } 
+    } else {
+      callback()
+    }
+  })
 
+  // For handling a 'check room' event to validate socket connected to a room
+  socket.on('check room', async (roomId, callback) => {
+    console.log('###############checkroom called##################')
+    console.log()
+    if (socket.rooms.has(roomId)){
+      console.log('#############did####################')
+      console.log()
+      const messageHistory = await socketHelper.getMessageHistory(roomId)
+      socket.emit('room hisory', messageHistory)
+      callback()
+    } else {
+      console.log('################not#################')
+      console.log()
+      callback('not_connected')
+    }
   })
 
   // Handles disconnect event
   socket.on('disconnect', async (reason) => {
 
-    console.log(`${auth.username} socket disconnected`, `REASON: ${reason}` )
+    console.log(`${auth.username} socket disconnected`, `REASON: ${reason}`, `Stored roomId: ${socket.connectedRoom}` )
 
     // Id of the room the socket was connected to
     const roomId = socket.connectedRoom
 
     // If the user was connected to a room on disconnect
-    if (roomId && (reason !== 'transport close')){
+    if (roomId){
       // Decrements the connected users count for that room
       connectedUsers[roomId]--
       logger.info(`${auth.username} disconnected from room ${roomId}`, connectedUsers)
+
+      // And removes the connectedRoom attribute 
+      delete socket.connectedRoom
 
       // Disconnect message sent to the chatroom
       const disconnectMessage = {
