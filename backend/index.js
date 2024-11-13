@@ -9,8 +9,46 @@ import Room from './models/room.js'
 import jwt from 'jsonwebtoken'
 import socketHelper from './utils/socketHelper.js'
 
-// Counter for storing number of online users
+// Depreciated counter for connected users
 const connectedUsers = {}
+
+// For resetting the messages on startup for dev purposes
+console.log('...resetting messages')
+try {
+  await Message.deleteMany({})
+  console.log('reset messages')
+} catch (e) {
+  console.error('could not delete messages',e)
+}
+
+// Counter for storing number of users in each room
+logger.info('initialising connected users object...')
+const roomDocs = await Room.find({})
+const connectableRooms = roomDocs.map(roomDoc => {
+  return {
+    ...roomDoc.toJSON(),
+    connected: 0
+  }
+})
+
+// Method for decrementing the connected users count for a roomId
+const decrementConnectedIn = (roomId) => {
+  connectableRooms.forEach(room => {
+    if (room.id === roomId) {
+      room.connected--
+    }
+  })
+}
+
+// Method for incrementing the connected users count for a roomId
+const incrementConnectedIn = (roomId) => {
+  connectableRooms.forEach(room => {
+    if (room.id === roomId){
+      room.connected++
+    }
+  })
+}
+
 
 // Creates an HTTP server for the express app to run on
 const httpServer = createServer(app)
@@ -48,44 +86,65 @@ io.on('connect', async socket => {
   const auth = socket.handshake.auth
   console.log(`${auth.username} socket connected`, `RESTORED?: ${socket.recovered}`)
 
-  // Emits the available rooms to join to the client
-  const availableRooms = await Room.find({})
-  socket.emit('rooms list', availableRooms)
+  // Emits the array of connectable rooms to the client upon connection
+  socket.emit('rooms list', connectableRooms)
 
+  // Subscribes socket to updates about the connectable rooms list
+  socket.join('connectable_rooms_updates')
+  
   // For handling a join room ack
   socket.on('join room', async (roomId, callback) => {
     console.log('join room request recieved!!')
 
-    // Joins the socket to the room
-    socket.join(roomId)
-
-    // Updates the sockets 'connectedRoom' attribute
-    socket.connectedRoom = roomId
-
-    // Acknowledges the join room request to the socket
-    callback()
- 
-    // Sends the current number of users in the room, or if undefined 0
-    const currentlyInRoom = connectedUsers[roomId]
-    socket.emit('online users count', currentlyInRoom || 0)
-
-    // Increments the count of users connected to the room, or if undefined initialises to 1
-    connectedUsers[roomId] = currentlyInRoom ? currentlyInRoom + 1 : 1
-
-    console.log(`user ${auth.username} joined room ${roomId}`, connectedUsers)
-
-    // Emits a connection message to users in the room
-    const connectionMessage = {
-      content: `${auth.username} connected...`,
-      time: Date.now(),
-      type: 'CONNECT',
-      room: roomId
+    // Checks that the roomId is in the list of connectable rooms
+    if (!connectableRooms.some((room) => room.id === roomId)){
+      // If roomId doesnt match any of the connectable rooms ids, responds to 'join room' with an error and returns
+      callback(new Error('room not found'))
+      return
     }
-    io.to(roomId).emit('user connected', connectionMessage)
 
-    // And saves it to the database
-    const newConnectionMessage = new Message(connectionMessage)
-    await newConnectionMessage.save()
+    // Unsubscribes from updates about available rooms since joining a room
+    socket.leave('connectable_rooms_updates')
+
+    // First checks that the client not connected to the room server-side already
+    if (!socket.rooms.has(roomId)){
+      // Joins the socket to the room
+      socket.join(roomId)
+
+      // Updates the sockets 'connectedRoom' attribute
+      socket.connectedRoom = roomId
+
+      // Acknowledges the join room request to the socket
+      callback()
+
+      // Sends the current number of users in the room, or if undefined, sends 0
+      const currentlyInRoom = connectedUsers[roomId]
+      socket.emit('online users count', currentlyInRoom || 0)
+
+      // Increments the count of users connected to the room, or if undefined initialises to 1
+      connectedUsers[roomId] = currentlyInRoom ? currentlyInRoom + 1 : 1
+      console.log(`user ${auth.username} joined room ${roomId}`, connectedUsers)
+
+      // Increments the connected count for the room object in the connectableRooms array
+      incrementConnectedIn(roomId) 
+      // Issues update to the subscribed sockets
+      io.to('connectable_rooms_updates').emit('rooms list', connectableRooms)
+      
+      console.log(`User joined room`, connectableRooms)
+
+      // Emits a connection message to users in the room
+      const connectionMessage = {
+        content: `${auth.username} connected...`,
+        time: Date.now(),
+        type: 'CONNECT',
+        room: roomId
+      }
+      io.to(roomId).emit('user connected', connectionMessage)
+
+      // And saves it to the database
+      const newConnectionMessage = new Message(connectionMessage)
+      await newConnectionMessage.save()
+    }
 
     // For sending the chat history of the current room to the connected user
     const chatHistory = await socketHelper.getMessageHistory(roomId)
@@ -96,8 +155,8 @@ io.on('connect', async socket => {
   socket.on('leave room', async (roomId, callback) => {
     console.log('leave room request recieved!!')
 
-    // If the socket has a connected room attribute
-    if (socket.connectedRoom) {
+    // Checks the socket is connected to the room server-side
+    if (socket.rooms.has(roomId)) {
       // The requested room is left
       socket.leave(roomId)
 
@@ -106,6 +165,10 @@ io.on('connect', async socket => {
 
       // Decrements the number of users in the connected users object
       connectedUsers[roomId]--
+
+      // NEW: decrements the connected attribute on the room for the connectable rooms array
+      decrementConnectedIn(roomId)
+      console.log('user left room', connectableRooms)
 
       // Acknowledges the leave room request
       callback()

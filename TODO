@@ -86,6 +86,7 @@ USER TESTS:
   - write test for weak password DONE (fails)
 
 LATER: 
+- add list of users that are in each room USE REDIS?
 - handle multiple tabs so that not multiple connect messages for same user (list of joined users on server? redis?)
 - switch to redis to store the online users counter
 - think about the guarantee of message order with mongo and if better solution needed frontend
