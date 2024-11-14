@@ -43,10 +43,6 @@
 - connection messages persisted to database DONE
 - change the css for an info message DONE
 - make messages from the current user a diff color DONE
-
-
-
-
 - Add frontend functionality to join rooms 
   - add cleanup functions to de-register functions DONE
   - Raise state in Chatroom and socket event handlers to a homepage component that renders the Chatroom DONE * (thought: maybe we dont want to connect to socket server unless we are in a room? Figure out way of tracking users in a room after)
@@ -59,7 +55,6 @@
   - refreshing page keeps user in room if connected to room DONE
     - send check room event to check if the user is connected to the room in local storage DONE
     - emits 'join room' if not connected DONE
-
 - Add backend functionality to join rooms
   - join requests adds a user to a room DONE
   - join request sends message history to user DONE
@@ -72,18 +67,28 @@
   - research how to test socket.io express applications
   - respond to 'check room' events by checking if user connected to the room DONE
   - send message history with the room connection if connected DONE
-
 USER ROUTE:
 - test that a new user can be added postman DONE
 - write error handlers for new user route DONE
 - implement password strength checker DONE
-
 USER TESTS:
 - write tests for user router DONE 
   - write test for valid data DONE
   - write test for dup username DONE
   - write test for missing credentials DONE
   - write test for weak password DONE (fails)
+
+- make room name text bigger DONE
+- improve visibility of room info, underlined hard to read DONE
+- remove logs from frontend
+- research how to test chat.io applications
+- write some tests frontend and backend
+- deploy to fly.io
+- Research how to make a repository presentable/ look at other repos for inspo
+- make repos presentable (not too much time, much work to do)
+
+
+
 
 LATER: 
 - add list of users that are in each room USE REDIS?

@@ -1,6 +1,6 @@
 import { socket } from "../socket.js"
 
-const RoomInfo = ({room, handleLeaveRoom, notify, onlineUsersCount}) => {
+const RoomInfo = ({room, handleLeaveRoom, notify}) => {
 
   const handleLeave = () => {
     socket.timeout(5000).emit('leave room', room.id, (err, response) => {
@@ -16,8 +16,8 @@ const RoomInfo = ({room, handleLeaveRoom, notify, onlineUsersCount}) => {
 
   return (
     <div id="roominfo">
-      <span id="roomnumber">Room: {room.name}</span>
-      <span id="usercount">Online: {onlineUsersCount}</span>
+      <span id="roomname"><b>{room.name}</b> room</span>
+      <span id="usercount">Connected: {room.connected}</span>
       <button id="leavebutton" onClick={() => handleLeave()}>Leave Room</button>
     </div>
   )

@@ -10,8 +10,6 @@ const Homepage = ({user, setUser, notify}) => {
   // State for storing messages
   const [messages, setMessages] = useState([])
 
-  // State for storing the number of online users
-  const [onlineUsersCount, setOnlineUsersCount] = useState(0)
 
   // State for tracking if the socket is connected
   const [isConnected, setIsConnected] = useState(false)
@@ -29,7 +27,7 @@ const Homepage = ({user, setUser, notify}) => {
         window.localStorage.removeItem('room')
         return
       }
-      setRoom(room)
+      setRoom({...room, connected: room.connected + 1})
       window.localStorage.setItem('room', JSON.stringify(room))
     })
   }
@@ -59,8 +57,6 @@ const Homepage = ({user, setUser, notify}) => {
         try {
           const roomFromLocal = JSON.parse(window.localStorage.getItem('room'))
           if (roomFromLocal){
-            console.log('##########effect hook called to restore room#######################')
-            console.log('room from local:', roomFromLocal)
             // Emits a 'check room' event to the server to assure that the client socket is still connected to the room
             socket.timeout(5000).emit('check room', roomFromLocal.id, (error, response) => {
               if (error){
@@ -70,11 +66,9 @@ const Homepage = ({user, setUser, notify}) => {
                 handleLeaveRoom()
               } else if (response === 'not_connected') {
                 // If the room is not connected, a 'join room' request is sent to the server
-                console.log('socket was not in the room, emitting join request')
                 handleJoinRoom(roomFromLocal)
               } else {
                 // If the room is connected, set the room state
-                console.log('socket in room from local, setting room state')
                 setRoom(roomFromLocal)
               }
             })
@@ -90,19 +84,27 @@ const Homepage = ({user, setUser, notify}) => {
 
   // on 'connect' event handler
   const onConnect = () => {
-    console.log('Connected to server')
     setIsConnected(true)
   }
 
   // for handling disconnect event
   const onDisconnect = () => {
-    console.log('disconnected from server')
     setIsConnected(false)
   }
 
   // For handling a rooms list event and setting the roomsList state
   const onRoomsList = rooms => {
     setRoomsList(rooms)
+    // Checks if the application is connected to a room
+    if (room) {
+      // Temporary and wasteful
+      // Checks if the update is relevant to the connected room
+      const mostCurrentOfRoom = rooms.find(updatedRoom => room.id === updatedRoom.id)
+      // Checks if the count is different
+      if (mostCurrentOfRoom.connected !== room.connected){
+        setRoom(mostCurrentOfRoom)
+      } 
+    } 
   }
 
   // For handling connection error event
@@ -119,21 +121,16 @@ const Homepage = ({user, setUser, notify}) => {
     console.log('Connection to server failed!! Message from server:', err.name, err.message)
   }
 
-  // Event handler for online user count info
-  const onOnlineUserCount = usersOnline => {
-    setOnlineUsersCount(usersOnline)
-  }
-
   // For handling user connected events
   const onUserConnected = (message) => {
     setMessages(previous => previous.concat(message))
-    setOnlineUsersCount(previous => previous + 1)
+    //setOnlineUsersCount(previous => previous + 1)
   }
 
   // For handling user diconnect events
   const onUserDisconnect = (message) => {
     setMessages(previous => previous.concat(message))
-    setOnlineUsersCount(previous => previous - 1)
+    //setOnlineUsersCount(previous => previous - 1)
   }
 
   // For handling room history event
@@ -152,7 +149,6 @@ const Homepage = ({user, setUser, notify}) => {
     socket.on('disconnect', onDisconnect)
     socket.on('connect_error', onConnectionError)
     socket.on('rooms list', onRoomsList)
-    socket.on('online users count', onOnlineUserCount)
     socket.on('user connected', onUserConnected)
     socket.on('user disconnected', onUserDisconnect)
     socket.on('room history', onRoomHistory)
@@ -169,7 +165,6 @@ const Homepage = ({user, setUser, notify}) => {
       socket.off('disconnect', onDisconnect)
       socket.off('connect_error', onConnectionError)
       socket.off('rooms list', onRoomsList)
-      socket.off('online users count', onOnlineUserCount)
       socket.off('user connected', onUserConnected)
       socket.off('user disconnected', onUserDisconnect)
       socket.off('room history', onRoomHistory)
@@ -189,7 +184,7 @@ const Homepage = ({user, setUser, notify}) => {
         messages={messages} 
         room={room}
         handleLeaveRoom={handleLeaveRoom}
-        onlineUsersCount={onlineUsersCount}></ChatRoom>
+        ></ChatRoom>
     )
   }
   

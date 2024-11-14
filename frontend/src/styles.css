@@ -31,7 +31,12 @@
   align-items: center;
   border-bottom: 2px solid rgb(168, 144, 144);
   font-size: larger;
-  font-style: italic;
+}
+
+#usercount{
+  margin-left: 10px;
+  border-left: 2px solid rgb(168, 144, 144);
+  padding-left: 8px;
 }
 
 .title{
@@ -39,9 +44,7 @@
   width: 100%;
 }
 
-#usercount {
-  padding-left: 15%;
-}
+
 
 #logoutbutton{
   position: absolute; /* Ensure the login button is positioned */
@@ -291,6 +294,7 @@
 .roomli .room-info {
   display: flex;
   flex-direction: column;
+  font-size: larger;
 }
 
 .roomli .room-info span {

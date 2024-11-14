@@ -103,9 +103,6 @@ io.on('connect', async socket => {
       return
     }
 
-    // Unsubscribes from updates about available rooms since joining a room
-    socket.leave('connectable_rooms_updates')
-
     // First checks that the client not connected to the room server-side already
     if (!socket.rooms.has(roomId)){
       // Joins the socket to the room
@@ -139,7 +136,7 @@ io.on('connect', async socket => {
         type: 'CONNECT',
         room: roomId
       }
-      io.to(roomId).emit('user connected', connectionMessage)
+      io.to(roomId).emit('chat message', connectionMessage)
 
       // And saves it to the database
       const newConnectionMessage = new Message(connectionMessage)
@@ -168,6 +165,8 @@ io.on('connect', async socket => {
 
       // NEW: decrements the connected attribute on the room for the connectable rooms array
       decrementConnectedIn(roomId)
+      // Emits update about the connectable rooms
+      io.to('connectable_rooms_updates').emit('rooms list', connectableRooms)
       console.log('user left room', connectableRooms)
 
       // Acknowledges the leave room request
@@ -180,7 +179,7 @@ io.on('connect', async socket => {
         type: 'DISCONNECT',
         room: roomId
       }
-      io.to(roomId).emit('user disconnected', disconnectMessage)
+      io.to(roomId).emit('chat message', disconnectMessage)
 
       // And saved to the database
       const newDisconnectMessage = new Message(disconnectMessage)
@@ -220,6 +219,11 @@ io.on('connect', async socket => {
       // Decrements the connected users count for that room
       connectedUsers[roomId]--
       logger.info(`${auth.username} disconnected from room ${roomId}`, connectedUsers)
+
+      // Decrements the connected attribute on the connectable room object in the array
+      decrementConnectedIn(roomId)
+      // Emits update about connectable rooms to subscribed sockets
+      io.to('connectable_rooms_updates').emit('rooms list', connectableRooms)
 
       // And removes the connectedRoom attribute 
       delete socket.connectedRoom
