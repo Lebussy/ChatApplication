@@ -63,9 +63,12 @@ io.use((socket, next) => {
     // Verifies the token and sets the auth attribute to the decoded token
     const decoded = jwt.verify(auth.token, process.env.SECRET)
     socket.handshake.auth = {...decoded, token: auth.token}
+    console.log('#############validation success####################')
+    console.log()
     next()
   } catch (e) {
     // If token varification fails, passes a new error to the next middlewear
+    console.log('Validation failed!')
     next(new Error(e.message))
   }
 })

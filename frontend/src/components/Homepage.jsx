@@ -119,6 +119,7 @@ const Homepage = ({user, setUser, notify}) => {
     }
     handleLogout()
     console.log('Connection to server failed!! Message from server:', err.name, err.message)
+    console.error(err)
   }
 
   // For handling user connected events

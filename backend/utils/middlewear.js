@@ -38,7 +38,7 @@ const requestLogger = (req, res, next) => {
   const method = req.method
   const body = req.body
   logger.info(`METHOD: ${method}`)
-  logger.info(`BODY: ${body}`)
+  logger.info(`BODY: `, body)
   next()
 }
 

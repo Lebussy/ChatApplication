@@ -36,8 +36,6 @@ app.use(middlewear.requestLogger)
 // For serving the static frontend dist
 app.use(express.static('dist'))
 
-
-
 // Router for handling user requests
 app.use('/api/users', userRouter)
 
