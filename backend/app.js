@@ -33,8 +33,10 @@ app.use(express.json())
 // Loggs request info to the console before passing it on to other handlers
 app.use(middlewear.requestLogger)
 
-// For serving the static frontend dist
-app.use(express.static('dist'))
+if (process.env.NODE_ENV === 'PRODUCTION'){
+  // For serving the static frontend dist
+  app.use(express.static('dist'))
+}
 
 // Router for handling user requests
 app.use('/api/users', userRouter)
