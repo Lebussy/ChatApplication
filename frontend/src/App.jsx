@@ -1,4 +1,3 @@
-import ChatRoom from './components/Chatroom.jsx'
 import Login from './components/Login.jsx'
 import Notification from './components/Notification.jsx'
 import UserRegistration from './components/UserRegistration.jsx'

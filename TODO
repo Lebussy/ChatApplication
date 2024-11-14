@@ -80,9 +80,9 @@ USER TESTS:
 
 - make room name text bigger DONE
 - improve visibility of room info, underlined hard to read DONE
-- remove logs from frontend
-- research how to test chat.io applications
-- write some tests frontend and backend
+- remove logs from frontend DONE
+- research how to test chat.io applications DONE
+- write some tests frontend and backend DECIDED NOT TO!
 - deploy to fly.io
 - Research how to make a repository presentable/ look at other repos for inspo
 - make repos presentable (not too much time, much work to do)

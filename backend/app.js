@@ -24,7 +24,7 @@ try {
   await mongoose.connect(url)
   logger.info('connected to ', url)
 } catch (error) {
-  logger.error('could not connect to database', error.message)
+  logger.info('could not connect to database', error.message)
 }
 
 // json parser for request bodies with the application/json Content-Type headers
@@ -32,6 +32,11 @@ app.use(express.json())
 
 // Loggs request info to the console before passing it on to other handlers
 app.use(middlewear.requestLogger)
+
+// For serving the static frontend dist
+app.use(express.static('dist'))
+
+
 
 // Router for handling user requests
 app.use('/api/users', userRouter)

@@ -1,5 +1,5 @@
 const error = (...error) => {
-  if (!process.env.NODE_ENV === 'test'){
+  if (!(process.env.NODE_ENV === 'test')){
     console.error(...error)
   }
 }

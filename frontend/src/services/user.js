@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const baseURL = 'http://localhost:3000/api'
+const baseURL = '/api'
 
 // Method for posting login credentials to the login api
 const login = async (credentials) => {

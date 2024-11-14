@@ -12,15 +12,6 @@ import socketHelper from './utils/socketHelper.js'
 // Depreciated counter for connected users
 const connectedUsers = {}
 
-// For resetting the messages on startup for dev purposes
-console.log('...resetting messages')
-try {
-  await Message.deleteMany({})
-  console.log('reset messages')
-} catch (e) {
-  console.error('could not delete messages',e)
-}
-
 // Counter for storing number of users in each room
 logger.info('initialising connected users object...')
 const roomDocs = await Room.find({})
@@ -268,7 +259,8 @@ io.on('connect', async socket => {
   })
 })
 
+const PORT = config.PORT || 3000
 // initialise the app to listen on the port
-httpServer.listen(config.PORT, () => {
-  logger.info('...listening on port ', config.PORT)
+httpServer.listen(PORT, () => {
+  logger.info('...listening on port ', PORT)
 })
