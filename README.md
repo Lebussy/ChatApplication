@@ -14,3 +14,5 @@ A real-time chat application built with Node.js, Express, and Socket.IO.
 
 ## Demo
 Check out the live demo: [Live Demo](https://chattyappy.fly.dev/)
+
+![Chat app demo](media/ChatAppDem0.gif)
