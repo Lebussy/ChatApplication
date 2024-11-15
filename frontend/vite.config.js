@@ -12,7 +12,7 @@ export default defineConfig({
       },
       '/socket': {
         target: 'http://localhost:3000'
-      }
+      } 
     }
   }
 })

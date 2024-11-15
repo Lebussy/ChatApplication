@@ -33,7 +33,7 @@ app.use(express.json())
 // Loggs request info to the console before passing it on to other handlers
 app.use(middlewear.requestLogger)
 
-if (process.env.NODE_ENV === 'PRODUCTION'){
+if (process.env.NODE_ENV === 'production'){
   // For serving the static frontend dist
   app.use(express.static('dist'))
 }

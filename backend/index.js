@@ -97,6 +97,9 @@ io.on('connect', async socket => {
       return
     }
 
+    // Unsubscribes to the rooms list updates
+    socket.leave('connectable_rooms_list')
+
     // First checks that the client not connected to the room server-side already
     if (!socket.rooms.has(roomId)){
       // Joins the socket to the room
@@ -109,15 +112,12 @@ io.on('connect', async socket => {
       callback()
 
       // Sends the current number of users in the room, or if undefined, sends 0
-      const currentlyInRoom = connectedUsers[roomId]
-      socket.emit('online users count', currentlyInRoom || 0)
-
-      // Increments the count of users connected to the room, or if undefined initialises to 1
-      connectedUsers[roomId] = currentlyInRoom ? currentlyInRoom + 1 : 1
-      console.log(`user ${auth.username} joined room ${roomId}`, connectedUsers)
+      const connectingRoom = connectableRooms.find(room => room.id === roomId)
+      socket.emit('online users count', connectingRoom.connected || 0)
 
       // Increments the connected count for the room object in the connectableRooms array
       incrementConnectedIn(roomId) 
+
       // Issues update to the subscribed sockets
       io.to('connectable_rooms_updates').emit('rooms list', connectableRooms)
       
@@ -130,7 +130,7 @@ io.on('connect', async socket => {
         type: 'CONNECT',
         room: roomId
       }
-      io.to(roomId).emit('chat message', connectionMessage)
+      io.to(roomId).emit('user connected', connectionMessage)
 
       // And saves it to the database
       const newConnectionMessage = new Message(connectionMessage)
@@ -154,11 +154,9 @@ io.on('connect', async socket => {
       // For clearing the room attribute on the socket
       delete socket.connectedRoom
 
-      // Decrements the number of users in the connected users object
-      connectedUsers[roomId]--
-
-      // NEW: decrements the connected attribute on the room for the connectable rooms array
+      //decrements the connected count on the leaving room
       decrementConnectedIn(roomId)
+
       // Emits update about the connectable rooms
       io.to('connectable_rooms_updates').emit('rooms list', connectableRooms)
       console.log('user left room', connectableRooms)
@@ -173,7 +171,7 @@ io.on('connect', async socket => {
         type: 'DISCONNECT',
         room: roomId
       }
-      io.to(roomId).emit('chat message', disconnectMessage)
+      io.to(roomId).emit('user disconnected', disconnectMessage)
 
       // And saved to the database
       const newDisconnectMessage = new Message(disconnectMessage)

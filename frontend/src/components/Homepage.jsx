@@ -34,6 +34,11 @@ const Homepage = ({user, setUser, notify}) => {
     setRoomsList(rooms)
   }
 
+  // For handling recieving an 'online users count' event
+  const onOnlineUsersCount = count => {
+    setUsersInSameRoom(count)
+  }
+
   // For handling connection error event
   const onConnectionError = (err) => {
     // For notifying if connection to the server failed
@@ -77,6 +82,7 @@ const Homepage = ({user, setUser, notify}) => {
     socket.on('disconnect', onDisconnect)
     socket.on('connect_error', onConnectionError)
     socket.on('rooms list', onRoomsList)
+    socket.on('online users count', onOnlineUsersCount)
     socket.on('user connected', onUserConnected)
     socket.on('user disconnected', onUserDisconnect)
     socket.on('room history', onRoomHistory)
@@ -93,6 +99,7 @@ const Homepage = ({user, setUser, notify}) => {
       socket.off('disconnect', onDisconnect)
       socket.off('connect_error', onConnectionError)
       socket.off('rooms list', onRoomsList)
+      socket.off('online users count', onOnlineUsersCount)
       socket.off('user connected', onUserConnected)
       socket.off('user disconnected', onUserDisconnect)
       socket.off('room history', onRoomHistory)
@@ -111,12 +118,13 @@ const Homepage = ({user, setUser, notify}) => {
         handleLeaveRoom()
       } else {
         // Gets most up-to-date info for that room 
+        console.log('#################################')
+        console.log(roomId)
         const latestRoom = roomsList.find(roomFromList => roomFromList.id === roomId)
+        delete latestRoom.connected
         setRoom(latestRoom)
-        setUsersInSameRoom(latestRoom.connected)
         window.localStorage.setItem('room', JSON.stringify(roomId))
       }
-      
     })
   }
 
@@ -126,6 +134,7 @@ const Homepage = ({user, setUser, notify}) => {
     setMessages([])
     setRoom(null)
     window.localStorage.removeItem('room')
+
   }
 
   // Function for logging user out and removing user and rooms data

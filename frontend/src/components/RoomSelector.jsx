@@ -12,7 +12,7 @@ const RoomSelector = ({roomsList, handleJoinRoom}) => {
     <ul id="roomslist" >
       {roomsList.map(room => {
         return (
-          <Room key={room.id} room={room} joinRoom={() => handleJoinRoom(room)}></Room>
+          <Room key={room.id} room={room} joinRoom={() => handleJoinRoom(room.id)}></Room>
         )
       })}
     </ul>
