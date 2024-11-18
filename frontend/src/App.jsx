@@ -2,9 +2,9 @@ import Login from './components/Login.jsx'
 import Notification from './components/Notification.jsx'
 import UserRegistration from './components/UserRegistration.jsx'
 import { useEffect, useState } from 'react'
-
 import './styles.css'
 import Homepage from './components/Homepage.jsx'
+import { SocketProvider } from './SocketContext.jsx'
 
 const App = () => {
   // State for storing the user
@@ -42,7 +42,9 @@ const App = () => {
   // Method for rendering the chatRoom component
   const renderHomepage = () => {
     return (
-      <Homepage user={user} setUser={setUser} notify={notify}></Homepage>
+      <SocketProvider>
+        <Homepage user={user} setUser={setUser} notify={notify}></Homepage>
+      </SocketProvider>
     )
   }
 

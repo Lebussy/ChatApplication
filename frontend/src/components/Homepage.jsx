@@ -1,9 +1,12 @@
 import ChatRoom from "./ChatRoom"
 import RoomSelector from "./RoomSelector.jsx"
 import { useEffect, useState } from 'react'
-import { socket } from '../socket.js'
+import { useSocket } from "../SocketContext.jsx"
 
 const Homepage = ({user, setUser, notify}) => {
+  // Uses the singleton socket provided by the app
+  const socket = useSocket()
+
   // State for storing roomid
   const [room, setRoom] = useState(null)
   
@@ -19,6 +22,10 @@ const Homepage = ({user, setUser, notify}) => {
   // State for storing the number of users connected to the current room 
   const [usersInSameRoom, setUsersInSameRoom] = useState(0)
 
+  window.addEventListener('beforeunload', () => {
+    socket.disconnect()
+  })
+
   // on 'connect' event handler
   const onConnect = () => {
     setIsConnected(true)
@@ -27,6 +34,7 @@ const Homepage = ({user, setUser, notify}) => {
   // for handling disconnect event
   const onDisconnect = () => {
     setIsConnected(false)
+    
   }
 
   // For handling a rooms list event and setting the roomsList state
@@ -105,7 +113,6 @@ const Homepage = ({user, setUser, notify}) => {
       socket.off('room history', onRoomHistory)
       socket.off('chat message', onChatMessage)
       socket.disconnect()
-      setIsConnected(false)
     };
   }, [])
 
@@ -118,12 +125,16 @@ const Homepage = ({user, setUser, notify}) => {
         handleLeaveRoom()
       } else {
         // Gets most up-to-date info for that room 
-        console.log('#################################')
+        console.log('##############rooms list###################')
+        console.log(roomsList)
+        console.log('#################roomid################')
         console.log(roomId)
         const latestRoom = roomsList.find(roomFromList => roomFromList.id === roomId)
+        console.log('################room to join#################')
+        console.log(latestRoom)
         delete latestRoom.connected
         setRoom(latestRoom)
-        window.localStorage.setItem('room', JSON.stringify(roomId))
+        window.localStorage.setItem('room', JSON.stringify(latestRoom))
       }
     })
   }
@@ -153,10 +164,10 @@ const Homepage = ({user, setUser, notify}) => {
       // Checks there is no 'room' state before attempting to retrieve from local storage
       if (!room) {
         try {
-          const roomIdFromLocal = JSON.parse(window.localStorage.getItem('room'))
-          if (roomIdFromLocal){
+          const roomFromLocal = JSON.parse(window.localStorage.getItem('room'))
+          if (roomFromLocal){
             // Emits a 'check room' event to the server to assure that the client socket is still connected to the room
-            socket.timeout(5000).emit('check room', roomIdFromLocal, (error, response) => {
+            socket.timeout(5000).emit('check room', roomFromLocal.id, (error, response) => {
               if (error){
                 // If there is an error with checkroom eg room not exist
                 console.log('error with \'check room\' event')
@@ -164,10 +175,12 @@ const Homepage = ({user, setUser, notify}) => {
                 handleLeaveRoom()
               } else if (response === 'not_connected') {
                 // If the room is not connected, a 'join room' request is sent to the server
-                handleJoinRoom(roomIdFromLocal)
+                console.log('##############was not connected, room from local###################')
+                console.log(roomFromLocal)
+                handleJoinRoom(roomFromLocal.id)
               } else {
                 // If the room is connected, set the room state
-                setRoom(roomIdFromLocal)
+                setRoom(roomFromLocal)
               }
             })
           }
@@ -177,7 +190,7 @@ const Homepage = ({user, setUser, notify}) => {
         }
       }
     }
-  }, [isConnected, room, isConnected])
+  }, [isConnected])
 
 
   // Function for rendering chatroom if there is a room id

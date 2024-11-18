@@ -1,9 +1,11 @@
 import { useRef } from "react";
-import { socket } from "../socket";
+import { useSocket } from "../SocketContext.jsx"
 
 const MessageForm = ({user, roomId}) => {
   const textareaRef = useRef(null)
   const messageFormRef = useRef(null)
+
+  const socket = useSocket()
 
   // Event handler for sending a message to the server
   const sendMessage = event => {

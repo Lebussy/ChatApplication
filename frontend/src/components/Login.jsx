@@ -1,7 +1,8 @@
 import userService from '../services/user.js'
-import { socket } from '../socket.js'
 
 const Login = ({setUser, notify, setIsRegistering}) => {
+
+  
 
   // Event handler for logging in
   const handleLogin = async event => {

@@ -1,6 +1,8 @@
-import { socket } from "../socket.js"
+import { useSocket } from "../SocketContext.jsx"
 
 const RoomInfo = ({room, handleLeaveRoom, notify, usersInSameRoom}) => {
+
+  const socket = useSocket()
 
   const handleLeave = () => {
     socket.timeout(5000).emit('leave room', room.id, (err, response) => {
