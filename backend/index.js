@@ -4,23 +4,32 @@ import logger from './utils/logger.js'
 import app from './app.js'
 import {createServer} from 'http'
 import {Server} from 'socket.io'
-import Message from './models/message.js'
-import Room from './models/room.js'
 import jwt from 'jsonwebtoken'
-import socketHelper from './utils/socketHelper.js'
+import dbHelper from './utils/dbHelper.js'
 
-// Depreciated counter for connected users
-const connectedUsers = {}
+// For deleting all the messages in the database when the server restarts
+logger.info('removing messages from db...')
+try{
+  await dbHelper.deleteMessages()
+  logger.info('messages removed')
+} catch (e) {
+  logger.error('Could not delete db messages', e)
+}
 
 // Counter for storing number of users in each room
 logger.info('initialising connected users object...')
-const roomDocs = await Room.find({})
-const connectableRooms = roomDocs.map(roomDoc => {
-  return {
-    ...roomDoc.toJSON(),
-    connected: 0
-  }
-})
+let connectableRooms
+try {
+  const roomDocs = await dbHelper.getRooms()
+  connectableRooms = roomDocs.map(roomDoc => {
+    return {
+      ...roomDoc.toJSON(),
+      connected: 0
+    }
+  })
+} catch (e) {
+  logger.error('could not get joinable rooms from server', e)
+}
 
 // Method for decrementing the connected users count for a roomId
 const decrementConnectedIn = (roomId) => {
@@ -40,7 +49,6 @@ const incrementConnectedIn = (roomId) => {
   })
 }
 
-
 // Creates an HTTP server for the express app to run on
 const httpServer = createServer(app)
 
@@ -50,8 +58,7 @@ const io = new Server(httpServer, {
     origin: 'http://localhost:5173'
   },
   connectionStateRecovery: {
-    skipMiddlewares: false,
-    maxDisconnectionDuration: 3*1000
+    skipMiddlewares: false
   }
 })
 
@@ -63,8 +70,6 @@ io.use((socket, next) => {
     // Verifies the token and sets the auth attribute to the decoded token
     const decoded = jwt.verify(auth.token, process.env.SECRET)
     socket.handshake.auth = {...decoded, token: auth.token}
-    console.log('#############validation success####################')
-    console.log()
     next()
   } catch (e) {
     // If token varification fails, passes a new error to the next middlewear
@@ -78,7 +83,6 @@ io.on('connect', async socket => {
 
   // Authorisation object from the client
   const auth = socket.handshake.auth
-  console.log(`${auth.username} socket connected`, `RESTORED?: ${socket.recovered}`)
 
   // Emits the array of connectable rooms to the client upon connection
   socket.emit('rooms list', connectableRooms)
@@ -88,7 +92,6 @@ io.on('connect', async socket => {
   
   // For handling a join room ack
   socket.on('join room', async (roomId, callback) => {
-    console.log('join room request recieved!!')
 
     // Checks that the roomId is in the list of connectable rooms
     if (!connectableRooms.some((room) => room.id === roomId)){
@@ -101,7 +104,7 @@ io.on('connect', async socket => {
     socket.leave('connectable_rooms_list')
 
     // First checks that the client not connected to the room server-side already
-    if (!socket.rooms.has(roomId)){
+    if ((!socket.rooms.has(roomId)) && !socket.connectedRoom){
       // Joins the socket to the room
       socket.join(roomId)
 
@@ -120,8 +123,6 @@ io.on('connect', async socket => {
 
       // Issues update to the subscribed sockets
       io.to('connectable_rooms_updates').emit('rooms list', connectableRooms)
-      
-      console.log(`User joined room`, connectableRooms)
 
       // Emits a connection message to users in the room
       const connectionMessage = {
@@ -133,18 +134,22 @@ io.on('connect', async socket => {
       io.to(roomId).emit('user connected', connectionMessage)
 
       // And saves it to the database
-      const newConnectionMessage = new Message(connectionMessage)
-      await newConnectionMessage.save()
+      try {
+        await dbHelper.persistMessage(connectionMessage)
+      } catch (e) {
+        logger.error('could not persist message to db', e)
+      }
+      
     }
 
     // For sending the chat history of the current room to the connected user
-    const chatHistory = await socketHelper.getMessageHistory(roomId)
+    const chatHistory = await dbHelper.getMessageHistory(roomId)
     socket.emit('room history', chatHistory)
+
   })
 
   // Handles a 'leave room' request
   socket.on('leave room', async (roomId, callback) => {
-    console.log('leave room request recieved!!')
 
     // Checks the socket is connected to the room server-side
     if (socket.rooms.has(roomId)) {
@@ -159,7 +164,6 @@ io.on('connect', async socket => {
 
       // Emits update about the connectable rooms
       io.to('connectable_rooms_updates').emit('rooms list', connectableRooms)
-      console.log('user left room', connectableRooms)
 
       // Acknowledges the leave room request
       callback()
@@ -174,8 +178,11 @@ io.on('connect', async socket => {
       io.to(roomId).emit('user disconnected', disconnectMessage)
 
       // And saved to the database
-      const newDisconnectMessage = new Message(disconnectMessage)
-      await newDisconnectMessage.save()
+      try {
+        await dbHelper.persistMessage(disconnectMessage)
+      } catch(e) {
+        logger.error('Could not persist message to database',e)
+      }
     } else {
       callback()
     }
@@ -183,17 +190,11 @@ io.on('connect', async socket => {
 
   // For handling a 'check room' event to validate socket connected to a room
   socket.on('check room', async (roomId, callback) => {
-    console.log('###############checkroom called##################')
-    console.log()
     if (socket.rooms.has(roomId)){
-      console.log('#############did####################')
-      console.log()
-      const messageHistory = await socketHelper.getMessageHistory(roomId)
+      const messageHistory = await dbHelper.getMessageHistory(roomId)
       socket.emit('room hisory', messageHistory)
       callback()
     } else {
-      console.log('################not#################')
-      console.log()
       callback('not_connected')
     }
   })
@@ -201,19 +202,15 @@ io.on('connect', async socket => {
   // Handles disconnect event
   socket.on('disconnect', async (reason) => {
 
-    console.log(`${auth.username} socket disconnected`, `REASON: ${reason}`, `Stored roomId: ${socket.connectedRoom}` )
-
     // Id of the room the socket was connected to
     const roomId = socket.connectedRoom
 
     // If the user was connected to a room on disconnect
     if (roomId){
-      // Decrements the connected users count for that room
-      connectedUsers[roomId]--
-      logger.info(`${auth.username} disconnected from room ${roomId}`, connectedUsers)
 
       // Decrements the connected attribute on the connectable room object in the array
       decrementConnectedIn(roomId)
+
       // Emits update about connectable rooms to subscribed sockets
       io.to('connectable_rooms_updates').emit('rooms list', connectableRooms)
 
@@ -230,17 +227,17 @@ io.on('connect', async socket => {
       io.to(roomId).emit('user disconnected', disconnectMessage)
 
       // And saved to the database
-      const newDisconnectMessage = new Message(disconnectMessage)
-      await newDisconnectMessage.save()  
+      try {
+        await dbHelper.persistMessage(disconnectMessage)
+      } catch(e) {
+        logger.error('Could not persist message to database',e)
+      }
     } else {
-      logger.info(`${auth.username} socket disconnected, was not in room`)
     }
   })
 
   socket.on('chat message', async (message) => {
-
     const timeRecieved = Date.now()
-
     // Emits the message to the sockets in the same room
     io.to(message.roomId).emit('chat message', {
       ...message,
@@ -249,14 +246,18 @@ io.on('connect', async socket => {
     })
 
     // Saves the message to the database
-    const newChatMessage = new Message({
-      content: message.content,
-      time: timeRecieved,
-      type: 'MESSAGE',
-      user: auth.id,
-      room: message.roomId
-    })    
-    await newChatMessage.save()
+    try{
+      const newChatMessage = {
+        content: message.content,
+        time: timeRecieved,
+        type: 'MESSAGE',
+        user: auth.id,
+        room: message.roomId
+      }
+      await dbHelper.persistMessage(newChatMessage)
+    } catch(e) {
+      logger.error('could not persist chat message to database', e)
+    }
   })
 })
 
